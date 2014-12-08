@@ -1,1 +1,2 @@
-1. Find the coinbase python api here: https://github.com/sibblegp/coinbase_python
+1. Set API_KEY and API_SECRET as environment variables, for instance in ~/.zshenv
+2. Find the coinbase python api here: https://github.com/sibblegp/coinbase_python

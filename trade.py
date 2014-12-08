@@ -6,6 +6,8 @@ import urllib.error
 import urllib.parse
 import time
 import json
+import ast
+
 
 #Before implementation, set environmental variables with the names API_KEY and API_SECRET.
 
@@ -41,31 +43,39 @@ def make_request(url, body=None):
 
 def query(id=None):
     balance = make_request('https://api.coinbase.com/v1/account/balance')
-    balance = balance.decode("utf-8")
-    print(balance)
+    balance = ast.literal_eval(balance.decode("utf-8"))
+    print(balance['amount'])
 
 
-def buy(amount):
+def buy(amount, currency='BTC'):
     param = {
-        'qty': .01,
+        'qty': amount,
         'commit': 'false',
+        'currency': currency,
     }
     req = make_request('https://api.coinbase.com/v1/buys', body=json.dumps(param)).read()
-    req = req.decode("utf-8")
+    req = ast.literal_eval(req.decode("utf-8"))
     print(req)
 
 
-def sell(amount):
+def sell(amount, currency='BTC'):
     param = {
-        'qty': .01,
+        'qty': amount,
         'commit': 'false',
+        'currency': currency,
     }
     req = make_request('https://api.coinbase.com/v1/sells', body=json.dumps(param)).read()
-    req = req.decode("utf-8")
+    req = ast.literal_eval(req.decode("utf-8"))
     print(req)
 
+
+def status():
+    status = make_request('https://api.coinbase.com/v1/orders')
+    status = ast.literal_eval(status.decode("utf-8"))
+    print(status)
 
 
 if __name__ == '__main__':
     query()
-    sell(0.01)
+    #status()
+    #buy(1.5, currency='USD')

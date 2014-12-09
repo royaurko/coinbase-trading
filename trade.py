@@ -40,7 +40,7 @@ def make_request(url, body=None):
 def query(id=None):
     balance = make_request('https://api.coinbase.com/v1/account/balance')
     balance = json.loads(balance.decode("utf-8"))
-    print(balance['amount'], ' BTC')
+    return(balance['amount'])
 
 
 def buy(amount, log, currency='BTC'):
@@ -55,8 +55,9 @@ def buy(amount, log, currency='BTC'):
     log.write(current_time)
     log.write('Orders: ' + str(req['transfer']['description']) + ' , ')
     log.write('Status: ' + str(req['transfer']['status']) + ' , ')
-    if req['success'] == False:
-        log.write('Errors: ' + str(req['errors']) + ' ')
+    if req['success'] is False:
+        log.write('Errors: ' + str(req['errors']) + ' , ')
+    log.write('Balance: ' + str(query()))
     log.write('\n')
 
 
@@ -72,21 +73,18 @@ def sell(amount, log, currency='BTC'):
     log.write(current_time)
     log.write('Orders: ' + str(req['transfer']['description']) + ' , ')
     log.write('Status: ' + str(req['transfer']['status']) + ' , ')
-    if req['success'] == False:
-        log.write('Errors: ' + str(req['errors']) + ' ')
+    if req['success'] is False:
+        log.write('Errors: ' + str(req['errors']) + ' , ')
+    log.write('Balance: ' + str(query()))
     log.write('\n')
 
 def status():
     status = make_request('https://api.coinbase.com/v1/orders')
     status = json.loads(status.decode("utf-8"))
-    print('Number of orders: ', status['total_count'])
-    if status['total_count'] > 0:
-        print('Orders: ', status['orders'])
+    return status
 
 
 if __name__ == '__main__':
-    query()
-    status()
     log = open('tradelogs', 'w')
     buy(1.5, log, currency='USD')
     sell(1.5, log, currency='USD')

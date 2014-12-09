@@ -6,7 +6,6 @@ import urllib.error
 import urllib.parse
 import time
 import json
-import ast
 
 
 #Before implementation, set environmental variables with the names API_KEY and API_SECRET.
@@ -44,7 +43,7 @@ def query(id=None):
     print(balance['amount'], ' BTC')
 
 
-def buy(amount, currency='BTC'):
+def buy(amount, log, currency='BTC'):
     param = {
         'qty': amount,
         'commit': 'false',
@@ -52,12 +51,16 @@ def buy(amount, currency='BTC'):
     }
     req = make_request('https://api.coinbase.com/v1/buys', body=json.dumps(param)).read()
     req = json.loads(req.decode("utf-8"))
-    print('Order: ', req['transfer']['description'])
-    print('Status: ', req['transfer']['status'])
+    current_time = time.strftime("%m.%d.%y %H:%M ", time.localtime())
+    log.write(current_time)
+    log.write('Orders: ' + str(req['transfer']['description']) + ' , ')
+    log.write('Status: ' + str(req['transfer']['status']) + ' , ')
     if req['success'] == False:
-        print('Error: ', req['errors'])
+        log.write('Errors: ' + str(req['errors']) + ' ')
+    log.write('\n')
 
-def sell(amount, currency='BTC'):
+
+def sell(amount, log, currency='BTC'):
     param = {
         'qty': amount,
         'commit': 'false',
@@ -65,19 +68,25 @@ def sell(amount, currency='BTC'):
     }
     req = make_request('https://api.coinbase.com/v1/sells', body=json.dumps(param)).read()
     req = json.loads(req.decode("utf-8"))
-    print('Order: ', req['transfer']['description'])
-    print('Status: ', req['transfer']['status'])
+    current_time = time.strftime("%m.%d.%y %H:%M ", time.localtime())
+    log.write(current_time)
+    log.write('Orders: ' + str(req['transfer']['description']) + ' , ')
+    log.write('Status: ' + str(req['transfer']['status']) + ' , ')
     if req['success'] == False:
-        print('Errors: ', req['errors'])
+        log.write('Errors: ' + str(req['errors']) + ' ')
+    log.write('\n')
 
 def status():
     status = make_request('https://api.coinbase.com/v1/orders')
-    status = ast.literal_eval(status.decode("utf-8"))
-    print(status)
+    status = json.loads(status.decode("utf-8"))
+    print('Number of orders: ', status['total_count'])
+    if status['total_count'] > 0:
+        print('Orders: ', status['orders'])
 
 
 if __name__ == '__main__':
     query()
-    #status()
-    buy(1.5, currency='USD')
-    sell(1.5, currency='USD')
+    status()
+    log = open('tradelogs', 'w')
+    buy(1.5, log, currency='USD')
+    sell(1.5, log, currency='USD')

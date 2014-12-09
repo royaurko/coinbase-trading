@@ -94,12 +94,3 @@ def status():
     status = make_request('https://api.coinbase.com/v1/orders')
     status = json.loads(status.decode("utf-8"))
     return status
-
-
-if __name__ == '__main__':
-    log = open('tradelogs', 'w')
-    my_accounts = list_accounts()
-    buy(1.5, log, my_accounts[0], 'USD')
-    sell(1.5, log, my_accounts[0], 'USD')
-    buy(1.5, log, my_accounts[0], 'USD')
-    sell(1.5, log, my_accounts[0], 'USD')

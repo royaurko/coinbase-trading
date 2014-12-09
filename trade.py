@@ -46,18 +46,18 @@ def list_accounts():
     return id_list
 
 
-def query(id):
-    balance = make_request('https://api.coinbase.com/v1/accounts/'+ id + '/balance')
+def query(account_id):
+    balance = make_request('https://api.coinbase.com/v1/accounts/'+ account_id + '/balance')
     balance = json.loads(balance.decode("utf-8"))
     return(balance['amount'])
 
 
-def buy(amount, log, id, currency='BTC'):
+def buy(amount, log, account_id, currency='BTC'):
     param = {
         'qty': amount,
         'commit': 'false',
         'currency': currency,
-        'account_id': id,
+        'account_id': account_id,
     }
     req = make_request('https://api.coinbase.com/v1/buys', body=json.dumps(param)).read()
     req = json.loads(req.decode("utf-8"))
@@ -67,16 +67,16 @@ def buy(amount, log, id, currency='BTC'):
     log.write('Status: ' + str(req['transfer']['status']) + ' , ')
     if req['success'] is False:
        log.write('Errors: ' + str(req['errors']) + ' , ')
-    log.write('Balance: ' + str(query(id)))
+    log.write('Balance: ' + str(query(account_id)))
     log.write('\n')
 
 
-def sell(amount, log, id, currency='BTC'):
+def sell(amount, log, account_id, currency='BTC'):
     param = {
         'qty': amount,
         'commit': 'false',
         'currency': currency,
-        'account_id': id,
+        'account_id': account_id,
     }
     req = make_request('https://api.coinbase.com/v1/sells', body=json.dumps(param)).read()
     req = json.loads(req.decode("utf-8"))
@@ -86,7 +86,7 @@ def sell(amount, log, id, currency='BTC'):
     log.write('Status: ' + str(req['transfer']['status']) + ' , ')
     if req['success'] is False:
         log.write('Errors: ' + str(req['errors']) + ' , ')
-    log.write('Balance: ' + str(query(id)))
+    log.write('Balance: ' + str(query(account_id)))
     log.write('\n')
 
 
@@ -100,4 +100,6 @@ if __name__ == '__main__':
     log = open('tradelogs', 'w')
     my_accounts = list_accounts()
     buy(1.5, log, my_accounts[0], 'USD')
-    #sell(1.5, log, currency='USD')
+    sell(1.5, log, my_accounts[0], 'USD')
+    buy(1.5, log, my_accounts[0], 'USD')
+    sell(1.5, log, my_accounts[0], 'USD')

@@ -8,7 +8,7 @@ import time
 import json
 
 
-#Before implementation, set environmental variables with the names API_KEY and API_SECRET.
+# Set environmental variables with the names API_KEY and API_SECRET.
 
 
 def make_request(url, body=None):
@@ -34,7 +34,6 @@ def make_request(url, body=None):
     except urllib.error.HTTPError as e:
         print(e)
         return e
-
 
 
 def query(id=None):
@@ -77,6 +76,7 @@ def sell(amount, log, currency='BTC'):
         log.write('Errors: ' + str(req['errors']) + ' , ')
     log.write('Balance: ' + str(query()))
     log.write('\n')
+
 
 def status():
     status = make_request('https://api.coinbase.com/v1/orders')

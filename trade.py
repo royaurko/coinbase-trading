@@ -22,12 +22,10 @@ def make_request(url, body=None):
                'ACCESS_NONCE': nonce,
                'Accept': 'application/json'}
 
-    # If we are passing data, a POST request is made. Note that content_type is specified as json.
     if body:
         headers.update({'Content-Type': 'application/json'})
         req = urllib.request.Request(url, data=str.encode(body), headers=headers)
 
-    # If body is nil, a GET request is made.
     else:
         req = urllib.request.Request(url, headers=headers)
         response = urllib.request.urlopen(req)
@@ -38,13 +36,12 @@ def make_request(url, body=None):
         print(e)
         return e
 
-# Example of a GET request, where body is nil.
 
 
 def query(id=None):
     balance = make_request('https://api.coinbase.com/v1/account/balance')
-    balance = ast.literal_eval(balance.decode("utf-8"))
-    print(balance['amount'])
+    balance = json.loads(balance.decode("utf-8"))
+    print(balance['amount'], ' BTC')
 
 
 def buy(amount, currency='BTC'):
@@ -54,9 +51,11 @@ def buy(amount, currency='BTC'):
         'currency': currency,
     }
     req = make_request('https://api.coinbase.com/v1/buys', body=json.dumps(param)).read()
-    req = ast.literal_eval(req.decode("utf-8"))
-    print(req)
-
+    req = json.loads(req.decode("utf-8"))
+    print('Order: ', req['transfer']['description'])
+    print('Status: ', req['transfer']['status'])
+    if req['success'] == False:
+        print('Error: ', req['errors'])
 
 def sell(amount, currency='BTC'):
     param = {
@@ -65,9 +64,11 @@ def sell(amount, currency='BTC'):
         'currency': currency,
     }
     req = make_request('https://api.coinbase.com/v1/sells', body=json.dumps(param)).read()
-    req = ast.literal_eval(req.decode("utf-8"))
-    print(req)
-
+    req = json.loads(req.decode("utf-8"))
+    print('Order: ', req['transfer']['description'])
+    print('Status: ', req['transfer']['status'])
+    if req['success'] == False:
+        print('Errors: ', req['errors'])
 
 def status():
     status = make_request('https://api.coinbase.com/v1/orders')
@@ -78,4 +79,5 @@ def status():
 if __name__ == '__main__':
     query()
     #status()
-    #buy(1.5, currency='USD')
+    buy(1.5, currency='USD')
+    sell(1.5, currency='USD')

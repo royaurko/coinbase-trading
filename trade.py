@@ -36,6 +36,12 @@ def make_request(url, body=None):
         return e
 
 
+def exchange_rate(currency='USD'):
+    exchange_list = make_request('https://api.coinbase.com/v1/currencies/exchange_rates')
+    exchange_list = json.loads(exchange_list.decode("utf-8"))
+    print(exchange_list['btc_to_' + currency.lower()])
+
+
 def list_accounts():
     account_list = make_request('https://api.coinbase.com/v1/accounts')
     account_list = json.loads(account_list.decode("utf-8"))

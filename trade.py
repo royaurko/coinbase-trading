@@ -36,17 +36,28 @@ def make_request(url, body=None):
         return e
 
 
-def query(id=None):
-    balance = make_request('https://api.coinbase.com/v1/account/balance')
+def list_accounts():
+    account_list = make_request('https://api.coinbase.com/v1/accounts')
+    account_list = json.loads(account_list.decode("utf-8"))
+    number = account_list['total_count']
+    id_list = []
+    for i in range(number):
+        id_list.append(account_list['accounts'][i]['id'])
+    return id_list
+
+
+def query(id):
+    balance = make_request('https://api.coinbase.com/v1/accounts/'+ id + '/balance')
     balance = json.loads(balance.decode("utf-8"))
     return(balance['amount'])
 
 
-def buy(amount, log, currency='BTC'):
+def buy(amount, log, id, currency='BTC'):
     param = {
         'qty': amount,
         'commit': 'false',
         'currency': currency,
+        'account_id': id,
     }
     req = make_request('https://api.coinbase.com/v1/buys', body=json.dumps(param)).read()
     req = json.loads(req.decode("utf-8"))
@@ -55,16 +66,17 @@ def buy(amount, log, currency='BTC'):
     log.write('Orders: ' + str(req['transfer']['description']) + ' , ')
     log.write('Status: ' + str(req['transfer']['status']) + ' , ')
     if req['success'] is False:
-        log.write('Errors: ' + str(req['errors']) + ' , ')
-    log.write('Balance: ' + str(query()))
+       log.write('Errors: ' + str(req['errors']) + ' , ')
+    log.write('Balance: ' + str(query(id)))
     log.write('\n')
 
 
-def sell(amount, log, currency='BTC'):
+def sell(amount, log, id, currency='BTC'):
     param = {
         'qty': amount,
         'commit': 'false',
         'currency': currency,
+        'account_id': id,
     }
     req = make_request('https://api.coinbase.com/v1/sells', body=json.dumps(param)).read()
     req = json.loads(req.decode("utf-8"))
@@ -74,7 +86,7 @@ def sell(amount, log, currency='BTC'):
     log.write('Status: ' + str(req['transfer']['status']) + ' , ')
     if req['success'] is False:
         log.write('Errors: ' + str(req['errors']) + ' , ')
-    log.write('Balance: ' + str(query()))
+    log.write('Balance: ' + str(query(id)))
     log.write('\n')
 
 
@@ -86,5 +98,6 @@ def status():
 
 if __name__ == '__main__':
     log = open('tradelogs', 'w')
-    buy(1.5, log, currency='USD')
-    sell(1.5, log, currency='USD')
+    my_accounts = list_accounts()
+    buy(1.5, log, my_accounts[0], 'USD')
+    #sell(1.5, log, currency='USD')

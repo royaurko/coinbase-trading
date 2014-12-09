@@ -39,7 +39,7 @@ def make_request(url, body=None):
 def exchange_rate(currency='USD'):
     exchange_list = make_request('https://api.coinbase.com/v1/currencies/exchange_rates')
     exchange_list = json.loads(exchange_list.decode("utf-8"))
-    print(exchange_list['btc_to_' + currency.lower()])
+    return(float(exchange_list['btc_to_' + currency.lower()]))
 
 
 def list_accounts():
@@ -55,7 +55,7 @@ def list_accounts():
 def query(account_id):
     balance = make_request('https://api.coinbase.com/v1/accounts/'+ account_id + '/balance')
     balance = json.loads(balance.decode("utf-8"))
-    return(balance['amount'])
+    return(float(balance['amount']))
 
 
 def buy(amount, log, account_id, currency='BTC'):
@@ -67,14 +67,13 @@ def buy(amount, log, account_id, currency='BTC'):
     }
     req = make_request('https://api.coinbase.com/v1/buys', body=json.dumps(param)).read()
     req = json.loads(req.decode("utf-8"))
-    current_time = time.strftime("%m.%d.%y %H:%M ", time.localtime())
-    log.write(current_time)
-    log.write('Orders: ' + str(req['transfer']['description']) + ' , ')
-    log.write('Status: ' + str(req['transfer']['status']) + ' , ')
+    write_str = time.strftime("%m.%d.%y %H:%M ", time.localtime())
+    write_str += 'Orders: '+ str(req['transfer']['description']) + ' , '
+    write_str += 'Status: ' + str(req['transfer']['status']) + ' , '
     if req['success'] is False:
-       log.write('Errors: ' + str(req['errors']) + ' , ')
-    log.write('Balance: ' + str(query(account_id)))
-    log.write('\n')
+        write_str += 'Errors: ' + str(req['errors']) + ' , '
+    write_str += 'Balance: ' + str(query(account_id)) + '\n'
+    log.write(write_str.encode("utf-8"))
 
 
 def sell(amount, log, account_id, currency='BTC'):
@@ -86,14 +85,13 @@ def sell(amount, log, account_id, currency='BTC'):
     }
     req = make_request('https://api.coinbase.com/v1/sells', body=json.dumps(param)).read()
     req = json.loads(req.decode("utf-8"))
-    current_time = time.strftime("%m.%d.%y %H:%M ", time.localtime())
-    log.write(current_time)
-    log.write('Orders: ' + str(req['transfer']['description']) + ' , ')
-    log.write('Status: ' + str(req['transfer']['status']) + ' , ')
+    write_str = time.strftime("%m.%d.%y %H:%M ", time.localtime())
+    write_str += 'Orders: ' + str(req['transfer']['description']) + ' , '
+    write_str += 'Status: ' + str(req['transfer']['status']) + ' , '
     if req['success'] is False:
-        log.write('Errors: ' + str(req['errors']) + ' , ')
-    log.write('Balance: ' + str(query(account_id)))
-    log.write('\n')
+        write_str +=  'Errors: ' + str(req['errors']) + ' , '
+    write_str += 'Balance: ' + str(query(account_id)) + '\n'
+    log.write(write_str.encode("utf-8"))
 
 
 def status():

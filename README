@@ -5,7 +5,8 @@ A Python3 implementation of various trading strategies for bitcoin on coinbase
 2. The file trade.py defines all the functions necessary for executing trades on coinbase
 
 3. For testing purposes, in buy and sell requests the variable commit is set to false. 
-To execute real trades, set them to true.
+To execute real trades, set them to true inside the definitions of buy and sell functions 
+in trade.py.
 
 4. Strategies are supposed to go into strategies.py
 

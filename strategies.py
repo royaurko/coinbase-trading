@@ -5,7 +5,7 @@ from trade import list_accounts, query, buy, sell, exchange_rate
 
 # Constant proportion portfolio insurance - CPPI
 # portfolio_value represents the value of your portfolio at a given time
-# floor is the minimum value to which you are willing to let your portfolip drop
+# floor is the minimum value to which you are willing to let your portfolio drop
 # multiplier is your sensitivity to risk
 # A lower multiplier is more conservative, typically chosen between 3-6
 def cppi(portfolio_value, floor, log, account, multiplier=3, currency='USD'):

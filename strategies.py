@@ -20,30 +20,43 @@ def cppi(portfolio_value, floor, log, account, multiplier=3, currency='USD'):
     elif target_investment > 0:
         if target_investment > current_currency :
             #Need to buy more
-            print('Buying $', target_investment - current_currency)
+            print('Buying bitcoins worth $', target_investment - current_currency)
             buy(target_investment - current_currency, log, account, currency)
         elif current_currency > target_investment:
             #Need to sell off some bitcoins
-            print('Selling $', current_currency - target_investment)
+            print('Selling bitcoins worth $', current_currency - target_investment)
             sell(current_currency - target_investment, log, account, currency)
         else:
             print('Sitting tight')
+            write_str = time.strftime("%m.%d.%y %H:%M ", time.localtime())
+            write_str += 'Target investment matches current investment \n'
+            log.write(write_str.encode("utf-8"))
         return target_investment
+    else:
+        print('Sitting tight')
+        write_str = time.strftime("%m.%d.%y %H:%M ", time.localtime())
+        write_str += 'Target investment non-positive, current investment 0 \n'
+        log.write(write_str.encode("utf-8"))
+        return 0
 
 
 def cppi_rebalance(portfolio_value, floor, interval, log, account, multiplier=3, currency='USD'):
+    pvalue = portfolio_value
     while True :
-        bitcoin_investment = cppi(portfolio_value, floor, log, account, multiplier, currency)
-        cash = portfolio_value - bitcoin_investment
+        bitcoin_investment = cppi(pvalue, floor, log, account, multiplier, currency)
+        cash = pvalue - bitcoin_investment
         time.sleep(interval)
-        portfolio_value = cash + query(account) * exchange_rate(currency)
+        pvalue = cash + query(account) * exchange_rate(currency)
 
 
 if __name__ == '__main__':
     my_account = list_accounts()
-    log = open('tradelogs', 'wb', 0)
-    time_interval = 20
-    initial_portfolio_value = 10
-    initial_investment = 0
-    cppi_rebalance(10, 9, 60, log, my_account[0], 3, 'USD')
+    tradelogs = input('Enter name of log file: ')
+    log = open(tradelogs, 'wb', 0)
+    interval = int(input('Time interval to rebalance portfolio (in seconds): '))
+    currency = input('Enter currency: ')
+    initial_pvalue = float(input('Initial value of portfolio (including bitcoin investments if any): '))
+    floor = float(input('Enter floor: '))
+    multiplier = float(input('Enter multiplier: '))
+    cppi_rebalance(initial_pvalue, floor, interval, log, my_account[0], multiplier, currency)
 

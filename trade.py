@@ -58,10 +58,14 @@ def query(account_id):
     return(float(balance['amount']))
 
 
-def buy(amount, log, account_id, currency='BTC'):
+def buy(amount, log, account_id, currency='BTC', flag='n'):
+    if flag == 'y':
+        commit = 'true'
+    else:
+        commit = 'false'
     param = {
         'qty': amount,
-        'commit': 'false',
+        'commit': commit,
         'currency': currency,
         'account_id': account_id,
     }
@@ -76,10 +80,14 @@ def buy(amount, log, account_id, currency='BTC'):
     log.write(write_str.encode("utf-8"))
 
 
-def sell(amount, log, account_id, currency='BTC'):
+def sell(amount, log, account_id, currency='BTC', flag='n'):
+    if flag == 'y':
+        commit = 'true'
+    else:
+        commit = 'false'
     param = {
         'qty': amount,
-        'commit': 'false',
+        'commit': commit,
         'currency': currency,
         'account_id': account_id,
     }
@@ -89,7 +97,7 @@ def sell(amount, log, account_id, currency='BTC'):
     write_str += 'Orders: ' + str(req['transfer']['description']) + ' , '
     write_str += 'Status: ' + str(req['transfer']['status']) + ' , '
     if req['success'] is False:
-        write_str +=  'Errors: ' + str(req['errors']) + ' , '
+        write_str += 'Errors: ' + str(req['errors']) + ' , '
     write_str += 'Balance: ' + str(query(account_id)) + '\n'
     log.write(write_str.encode("utf-8"))
 

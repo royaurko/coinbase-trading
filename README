@@ -1,6 +1,7 @@
 A Python3 implementation of various trading strategies for bitcoin on coinbase
 
-1. Set API_KEY and API_SECRET as environment variables, for instance in ~/.zshenv
+1. Set API_KEY and API_SECRET as environment variables, for instance in ~/.zshenv if you use zsh or in 
+~/.bashrc if you use bash.
 
 2. The file trade.py defines all the functions necessary for executing trades on coinbase
 

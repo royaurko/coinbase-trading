@@ -28,8 +28,9 @@ def cppi(portfolio_value, floor, current_invested, log, account, multiplier=3, c
             buy(target_investment - current_currency, log, account, currency, flag)
             write_str = ', Value of portfolio: ' + str(portfolio_value) + ' ' + currency + '\n'
             log.write(write_str.encode("utf-8"))
-        elif current_currency > target_investment:
-            # Need to sell off some bitcoins
+        elif current_currency > target_investment and current_currency - target_investment >= 1:
+            # Need to sell off some bitcoins, coinbase allows sale in units
+            # bigger than 1
             print('Selling bitcoins worth $', current_currency - target_investment)
             sell(current_currency - target_investment, log, account, currency, flag)
             write_str = ', Value of portfolio: ' + str(portfolio_value) + ' ' + currency + '\n'

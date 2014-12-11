@@ -21,7 +21,8 @@ def cppi(portfolio_value, floor, current_invested, log, account, multiplier=3, c
         sell(current, log, account, 'BTC', flag)
         return 0
     elif target_investment > 0:
-        if target_investment > current_currency:
+        # Coinbase allows buying only in units bigger than 1
+        if target_investment > current_currency and target_investment - current_currency >= 1:
             # Need to buy more
             print('Buying bitcoins worth $', target_investment - current_currency)
             buy(target_investment - current_currency, log, account, currency, flag)

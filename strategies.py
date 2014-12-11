@@ -26,20 +26,26 @@ def cppi(portfolio_value, floor, current_invested, log, account, multiplier=3, c
             # Need to buy more
             print('Buying bitcoins worth $', target_investment - current_currency)
             buy(target_investment - current_currency, log, account, currency, flag)
+            write_str = ', Value of portfolio: ' + str(portfolio_value) + ' ' + currency + '\n'
+            log.write(write_str.encode("utf-8"))
         elif current_currency > target_investment:
             # Need to sell off some bitcoins
             print('Selling bitcoins worth $', current_currency - target_investment)
             sell(current_currency - target_investment, log, account, currency, flag)
+            write_str = ', Value of portfolio: ' + str(portfolio_value) + ' ' + currency + '\n'
+            log.write(write_str.encode("utf-8"))
         else:
             print('Sitting tight')
             write_str = time.strftime("%m.%d.%y %H:%M ", time.localtime())
-            write_str += 'Target investment of ' + str(target_investment) + ' matches current investment \n'
+            write_str += 'Target investment of ' + str(target_investment) + ' matches current investment '
+            write_str += ', Value of portfolio: ' + str(portfolio_value) + ' ' + currency + '\n'
             log.write(write_str.encode("utf-8"))
         return target_investment
     else:
         print('Sitting tight')
         write_str = time.strftime("%m.%d.%y %H:%M ", time.localtime())
-        write_str += 'Target investment non-positive, current investment 0 \n'
+        write_str += 'Target investment non-positive, current investment 0 '
+        write_str += ', Value of portfolio: ' + portfolio_value + ' ' + currency + '\n'
         log.write(write_str.encode("utf-8"))
         return 0
 

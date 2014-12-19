@@ -1,19 +1,28 @@
-A Python3 implementation of various trading strategies for bitcoin on coinbase
+A simple Python3 script that executes a basic rebalancing strategy for automated trading of bitcoins on Coinbase.
 
-1. Set API_KEY and API_SECRET as environment variables, for instance in ~/.zshenv if you use zsh or in 
+#Usage
+
+* Set **API_KEY** and **API_SECRET** as environment variables, for instance in ~/.zshenv if you use zsh or in 
 ~/.bashrc if you use bash.
 
-2. The file trade.py defines all the functions necessary for executing trades on coinbase
+* To run the script type 
 
-3. For safety reasons the program asks you in the beginning whether you want to execute real trades or
+```
+$ ./strategies.py
+
+```
+
+* For obvious reasons the program asks you in the beginning whether you want to execute real trades or
 if you just want to carry out simulations. If you want it to execute real trades enter 'y'. Be warned 
 that the author is not responsible for any financial losses incurred as a consequence.
 
-4. Strategies are supposed to go into strategies.py
+* So far the only rebalancing strategy implemented is the 
+[Constant Proportion Portfolio Insurance (CPPI)](http://en.wikipedia.org/wiki/Constant_proportion_portfolio_insurance)
 
-5. So far the only strategy implemented is the Constant Proportion Portfolio Insurance (CPPI)
+* The program writes every rebalance event to a log file (by default tradelogs), one can view it in real time
+by typing
 
-6. The program writes every rebalance event to a log file (by default tradelogs), to view it in real time
-type 
+```
+$ tail -f tradelogs
 
-		$tail -f tradelogs
+```
